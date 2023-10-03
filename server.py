@@ -1,5 +1,7 @@
 import grpc
+import threading
 from concurrent import futures
+from consumer.consumer import kafka_consumer_thread
 from proto import channel_pb2, channel_pb2_grpc
 # import channel_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -78,6 +80,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
             ])
             yield response
 
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     channel_pb2_grpc.add_channelServiceServicer_to_server(ChannelServiceServicer(), server)
@@ -87,4 +90,14 @@ def serve():
     server.wait_for_termination()
 
 if __name__ == '__main__':
+    # Define Kafka topics to consume
+    kafka_topics = ['topic1', 'topic2', 'topic3']
+
+    # Start Kafka consumer threads for each topic
+    for topic in kafka_topics:
+        consumer_thread = threading.Thread(target=kafka_consumer_thread, args=(topic,))
+        consumer_thread.daemon = True  # This allows the threads to exit when the main program exits
+        consumer_thread.start()
+
+    # Start the gRPC server
     serve()
