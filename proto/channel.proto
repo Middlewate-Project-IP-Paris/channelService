@@ -1,0 +1,102 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+
+package channel;
+
+service channelService {
+  rpc getPostStat (PostStatRequest) returns (PostStatResponse);
+  rpc getChannelInfo (ChannelInfoRequest) returns (ChannelInfoResponse);
+  rpc getChannels (google.protobuf.Empty) returns (stream GetChannelsResponse);
+  rpc getChannelSubsHistory (ChannelSubsHistoryRequest) returns (ChannelSubsHistoryResponse);
+  rpc getPostStatHistory (PostStatHistoryRequest) returns (PostStatHistoryResponse);
+  rpc getPosts (GetPostsRequest) returns (GetPostsResponse);
+}
+
+message PostStatRequest {
+  int64 channel_id = 1;
+  int64 post_id = 2;
+}
+
+message PostStatResponse {
+  int64 channel_id = 1;
+  int64 post_id = 2;
+  uint64 views = 3;
+  uint64 shares = 4;
+}
+
+message ChannelInfoRequest {
+  repeated int64 channel_id = 1;
+}
+
+message ChannelInfoResponse {
+  repeated ChannelInfo channel_info = 1;
+}
+
+message ChannelInfo {
+  int64 channel_id = 1;
+  string name = 2;
+  string link = 3;
+  string description = 4;
+  uint64 subscribers = 5;
+}
+
+message GetChannelsResponse {
+  repeated int64 channel_ids = 1;
+}
+
+message ChannelSubsHistoryRequest {
+  repeated int64 channel_id = 1;
+}
+
+message ChannelSubsHistoryResponse {
+  repeated ChannelSubsHistory channel_subs_history = 1;
+}
+
+message ChannelSubsHistory {
+  int64 channel_id = 1;
+  google.protobuf.Timestamp moment = 2;
+  int64 subs = 3;
+}
+
+message PostStatHistoryRequest {
+  repeated int64 channel_id = 1;
+  repeated HistoryType history_type = 2;
+}
+
+enum HistoryType {
+  HISTORY_UNSPECIFIED = 0;
+  HISTORY_VIEWS = 1;
+  HISTORY_SHARES = 2;
+}
+
+message PostStatHistoryResponse {
+  repeated PostStatHistory post_stat_history = 1;
+}
+
+message PostStatHistory {
+  int64 channel_id = 1;
+  repeated PostHistoryType post_history = 2;
+}
+
+message PostHistoryType {
+  HistoryType history_type = 1;
+  google.protobuf.Timestamp moment = 2;
+  int64 count = 3;
+}
+
+message GetPostsRequest {
+  repeated int64 channel_ids = 1;
+  google.protobuf.Timestamp moment = 2;
+}
+
+message GetPostsResponse {
+  repeated ChannelPosts channels_posts = 1;
+}
+
+message ChannelPosts {
+  int64 channel_id = 1;
+  repeated int64 post_id = 2;
+}
