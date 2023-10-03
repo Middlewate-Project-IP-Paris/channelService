@@ -5,7 +5,7 @@ from proto import channel_pb2, channel_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.empty_pb2 import Empty  # Import the Empty message
 
-class ChannelServiceServicer(channel_pb2_grpc.ChannelServiceServicer):
+class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     def getPostStat(self, request, context):
         # Implement your getPostStat logic here
         response = channel_pb2.PostStatResponse()
@@ -80,7 +80,7 @@ class ChannelServiceServicer(channel_pb2_grpc.ChannelServiceServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    channel_pb2_grpc.add_ChannelServiceServicer_to_server(ChannelServiceServicer(), server)
+    channel_pb2_grpc.add_channelServiceServicer_to_server(ChannelServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("Server started on port 50051")
