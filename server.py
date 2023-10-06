@@ -1,11 +1,26 @@
+import ast
+import binascii
+from json import loads
+import logging
 import grpc
 import threading
 from concurrent import futures
+
+from kafka import KafkaConsumer
 from consumer.consumer import kafka_consumer_thread
+from multiprocessing import Process
 from proto import channel_pb2, channel_pb2_grpc
+from confluent_kafka import Consumer
 # import channel_pb2_grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.empty_pb2 import Empty  # Import the Empty message
+import vars
+
+kafka_topics = ['subsCount']
+bootstrap_servers = [f'''{vars.KAFKA_BROKER_URL}:{vars.KAFKA_BROKER_PORT}''']
+# consumer = Consumer({'bootstrap.servers': f'''{vars.KAFKA_BROKER_URL}:{vars.KAFKA_BROKER_PORT}''', 'group.id': 'channel_service', 'auto.offset.reset': 'earliest'})
+
+# consumer.subscribe(topics=['subsCount'])
 
 class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     def getPostStat(self, request, context):
@@ -80,6 +95,38 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
             ])
             yield response
 
+def create_consumer(topic):
+    try:
+        consumer = Consumer({"bootstrap.servers": 'localhost:29092',
+                             "group.id": vars.KAFKA_CONSUMER_GROUP,
+                            #  "client.id": socket.gethostname(),
+                            #  "isolation.level": "read_committed",
+                            #  "default.topic.config": {"auto.offset.reset": "latest", # Only consume new messages
+                            #                           "enable.auto.commit": False}
+                             })
+        consumer.subscribe([topic])
+    except Exception as e:
+        logging.exception("Couldn't create the consumer")
+        consumer = None
+
+    return consumer
+
+
+def consume_data(topic):
+    consumer = KafkaConsumer(topic, bootstrap_servers='localhost:29092', auto_offset_reset='earliest', enable_auto_commit=False)
+    # consumer = create_consumer(topic='subsCount')
+    print(2)
+    while True:
+        message = consumer.poll(timeout=5)
+        print(3)
+        print(message)
+        if message is None:
+            continue
+        if message.error():
+            logging.error("Consumer error: {}".format(message.error()))
+            continue
+
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -87,17 +134,12 @@ def serve():
     server.add_insecure_port('[::]:50051')
     server.start()
     print("Server started on port 50051")
+    
+    t1 = Process(target=consume_data, args=(vars.KAKKA_SUBS_COUNT_TOPIC))
+    t1.start()
     server.wait_for_termination()
 
 if __name__ == '__main__':
-    # Define Kafka topics to consume
-    kafka_topics = ['topic1', 'topic2', 'topic3']
-
-    # Start Kafka consumer threads for each topic
-    for topic in kafka_topics:
-        consumer_thread = threading.Thread(target=kafka_consumer_thread, args=(topic,))
-        consumer_thread.daemon = True  # This allows the threads to exit when the main program exits
-        consumer_thread.start()
-
     # Start the gRPC server
     serve()
+    # pass
