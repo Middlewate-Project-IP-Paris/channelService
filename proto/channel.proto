@@ -1,6 +1,8 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+// import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
 
 
 
@@ -13,6 +15,7 @@ service channelService {
   rpc getChannelSubsHistory (ChannelSubsHistoryRequest) returns (ChannelSubsHistoryResponse);
   rpc getPostStatHistory (PostStatHistoryRequest) returns (PostStatHistoryResponse);
   rpc getPosts (GetPostsRequest) returns (GetPostsResponse);
+  rpc getPostInfo (GetPostsInfoRequest) returns (GetPostInfoResponse);
 }
 
 message PostStatRequest {
@@ -99,4 +102,22 @@ message GetPostsResponse {
 message ChannelPosts {
   int64 channel_id = 1;
   repeated int64 post_id = 2;
+}
+
+
+message GetPostsInfoRequest{
+  int64 channel_id = 1;
+  repeated int64 post_ids = 2;
+}
+
+message GetPostInfoResponse{
+  int64 channel_id = 1;
+  repeated PostInfo post_info = 2;
+}
+
+message PostInfo{
+  int64 post_id = 1;
+  google.protobuf.StringValue content = 2;
+  int64 views = 3;
+  int64 shares = 4;
 }
