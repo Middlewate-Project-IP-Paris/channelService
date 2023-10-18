@@ -7,7 +7,7 @@ import threading
 from concurrent import futures
 
 from kafka import KafkaConsumer
-from consumer.consumer import kafka_consumer_thread
+# from consumer.consumer import kafka_consumer_thread
 from multiprocessing import Process
 from proto import channel_pb2, channel_pb2_grpc
 from confluent_kafka import Consumer
@@ -112,19 +112,24 @@ def create_consumer(topic):
     return consumer
 
 
-def consume_data(topic):
-    consumer = KafkaConsumer(topic, bootstrap_servers='localhost:29092', auto_offset_reset='earliest', enable_auto_commit=False)
-    # consumer = create_consumer(topic='subsCount')
-    print(2)
+def consume_data():
+    consumer = KafkaConsumer("subsCount", bootstrap_servers='localhost:29092', auto_offset_reset='earliest', enable_auto_commit=False)
     while True:
-        message = consumer.poll(timeout=5)
-        print(3)
-        print(message)
-        if message is None:
-            continue
-        if message.error():
-            logging.error("Consumer error: {}".format(message.error()))
-            continue
+        # message = consumer.poll(timeout=5)
+        for message in consumer:
+            print(message.value.decode())
+        
+        # print("working")
+        # if message is None:
+        #     continue
+        # elif message.error():
+        #     logging.error("Consumer error: {}".format(message.error()))
+        #     continue
+        # else:
+        #     print(3)
+        #     print(f'''Message: {message.value.decode()}''')
+        
+        
 
 
 
@@ -135,7 +140,7 @@ def serve():
     server.start()
     print("Server started on port 50051")
     
-    t1 = Process(target=consume_data, args=(vars.KAKKA_SUBS_COUNT_TOPIC))
+    t1 = Process(target=consume_data)
     t1.start()
     server.wait_for_termination()
 

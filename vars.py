@@ -1,7 +1,7 @@
 KAFKA_BROKER_URL = "localhost"
 KAFKA_BROKER_PORT = "29092"
 
-KAKKA_SUBS_COUNT_TOPIC = "subsCount"
+KAFKA_SUBS_COUNT_TOPIC = 'subsCount'
 
 
 KAFKA_CONSUMER_GROUP = "channelService"
