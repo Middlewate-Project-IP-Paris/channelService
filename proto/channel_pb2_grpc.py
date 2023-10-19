@@ -2,8 +2,8 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import channel_pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+from proto import channel_pb2 as proto_dot_channel__pb2
 
 
 class channelServiceStub(object):
@@ -17,38 +17,38 @@ class channelServiceStub(object):
         """
         self.getPostStat = channel.unary_unary(
                 '/channel.channelService/getPostStat',
-                request_serializer=channel_pb2.PostStatRequest.SerializeToString,
-                response_deserializer=channel_pb2.PostStatResponse.FromString,
+                request_serializer=proto_dot_channel__pb2.PostStatRequest.SerializeToString,
+                response_deserializer=proto_dot_channel__pb2.PostStatResponse.FromString,
                 )
         self.getChannelInfo = channel.unary_unary(
                 '/channel.channelService/getChannelInfo',
-                request_serializer=channel_pb2.ChannelInfoRequest.SerializeToString,
-                response_deserializer=channel_pb2.ChannelInfoResponse.FromString,
+                request_serializer=proto_dot_channel__pb2.ChannelInfoRequest.SerializeToString,
+                response_deserializer=proto_dot_channel__pb2.ChannelInfoResponse.FromString,
                 )
         self.getChannels = channel.unary_stream(
                 '/channel.channelService/getChannels',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-                response_deserializer=channel_pb2.GetChannelsResponse.FromString,
+                response_deserializer=proto_dot_channel__pb2.GetChannelsResponse.FromString,
                 )
         self.getChannelSubsHistory = channel.unary_unary(
                 '/channel.channelService/getChannelSubsHistory',
-                request_serializer=channel_pb2.ChannelSubsHistoryRequest.SerializeToString,
-                response_deserializer=channel_pb2.ChannelSubsHistoryResponse.FromString,
+                request_serializer=proto_dot_channel__pb2.ChannelSubsHistoryRequest.SerializeToString,
+                response_deserializer=proto_dot_channel__pb2.ChannelSubsHistoryResponse.FromString,
                 )
         self.getPostStatHistory = channel.unary_unary(
                 '/channel.channelService/getPostStatHistory',
-                request_serializer=channel_pb2.PostStatHistoryRequest.SerializeToString,
-                response_deserializer=channel_pb2.PostStatHistoryResponse.FromString,
+                request_serializer=proto_dot_channel__pb2.PostStatHistoryRequest.SerializeToString,
+                response_deserializer=proto_dot_channel__pb2.PostStatHistoryResponse.FromString,
                 )
         self.getPosts = channel.unary_unary(
                 '/channel.channelService/getPosts',
-                request_serializer=channel_pb2.GetPostsRequest.SerializeToString,
-                response_deserializer=channel_pb2.GetPostsResponse.FromString,
+                request_serializer=proto_dot_channel__pb2.GetPostsRequest.SerializeToString,
+                response_deserializer=proto_dot_channel__pb2.GetPostsResponse.FromString,
                 )
         self.getPostInfo = channel.unary_unary(
                 '/channel.channelService/getPostInfo',
-                request_serializer=channel_pb2.GetPostsInfoRequest.SerializeToString,
-                response_deserializer=channel_pb2.GetPostInfoResponse.FromString,
+                request_serializer=proto_dot_channel__pb2.GetPostsInfoRequest.SerializeToString,
+                response_deserializer=proto_dot_channel__pb2.GetPostInfoResponse.FromString,
                 )
 
 
@@ -102,38 +102,38 @@ def add_channelServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'getPostStat': grpc.unary_unary_rpc_method_handler(
                     servicer.getPostStat,
-                    request_deserializer=channel_pb2.PostStatRequest.FromString,
-                    response_serializer=channel_pb2.PostStatResponse.SerializeToString,
+                    request_deserializer=proto_dot_channel__pb2.PostStatRequest.FromString,
+                    response_serializer=proto_dot_channel__pb2.PostStatResponse.SerializeToString,
             ),
             'getChannelInfo': grpc.unary_unary_rpc_method_handler(
                     servicer.getChannelInfo,
-                    request_deserializer=channel_pb2.ChannelInfoRequest.FromString,
-                    response_serializer=channel_pb2.ChannelInfoResponse.SerializeToString,
+                    request_deserializer=proto_dot_channel__pb2.ChannelInfoRequest.FromString,
+                    response_serializer=proto_dot_channel__pb2.ChannelInfoResponse.SerializeToString,
             ),
             'getChannels': grpc.unary_stream_rpc_method_handler(
                     servicer.getChannels,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                    response_serializer=channel_pb2.GetChannelsResponse.SerializeToString,
+                    response_serializer=proto_dot_channel__pb2.GetChannelsResponse.SerializeToString,
             ),
             'getChannelSubsHistory': grpc.unary_unary_rpc_method_handler(
                     servicer.getChannelSubsHistory,
-                    request_deserializer=channel_pb2.ChannelSubsHistoryRequest.FromString,
-                    response_serializer=channel_pb2.ChannelSubsHistoryResponse.SerializeToString,
+                    request_deserializer=proto_dot_channel__pb2.ChannelSubsHistoryRequest.FromString,
+                    response_serializer=proto_dot_channel__pb2.ChannelSubsHistoryResponse.SerializeToString,
             ),
             'getPostStatHistory': grpc.unary_unary_rpc_method_handler(
                     servicer.getPostStatHistory,
-                    request_deserializer=channel_pb2.PostStatHistoryRequest.FromString,
-                    response_serializer=channel_pb2.PostStatHistoryResponse.SerializeToString,
+                    request_deserializer=proto_dot_channel__pb2.PostStatHistoryRequest.FromString,
+                    response_serializer=proto_dot_channel__pb2.PostStatHistoryResponse.SerializeToString,
             ),
             'getPosts': grpc.unary_unary_rpc_method_handler(
                     servicer.getPosts,
-                    request_deserializer=channel_pb2.GetPostsRequest.FromString,
-                    response_serializer=channel_pb2.GetPostsResponse.SerializeToString,
+                    request_deserializer=proto_dot_channel__pb2.GetPostsRequest.FromString,
+                    response_serializer=proto_dot_channel__pb2.GetPostsResponse.SerializeToString,
             ),
             'getPostInfo': grpc.unary_unary_rpc_method_handler(
                     servicer.getPostInfo,
-                    request_deserializer=channel_pb2.GetPostsInfoRequest.FromString,
-                    response_serializer=channel_pb2.GetPostInfoResponse.SerializeToString,
+                    request_deserializer=proto_dot_channel__pb2.GetPostsInfoRequest.FromString,
+                    response_serializer=proto_dot_channel__pb2.GetPostInfoResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -157,8 +157,8 @@ class channelService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/channel.channelService/getPostStat',
-            channel_pb2.PostStatRequest.SerializeToString,
-            channel_pb2.PostStatResponse.FromString,
+            proto_dot_channel__pb2.PostStatRequest.SerializeToString,
+            proto_dot_channel__pb2.PostStatResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -174,8 +174,8 @@ class channelService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/channel.channelService/getChannelInfo',
-            channel_pb2.ChannelInfoRequest.SerializeToString,
-            channel_pb2.ChannelInfoResponse.FromString,
+            proto_dot_channel__pb2.ChannelInfoRequest.SerializeToString,
+            proto_dot_channel__pb2.ChannelInfoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -192,7 +192,7 @@ class channelService(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/channel.channelService/getChannels',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            channel_pb2.GetChannelsResponse.FromString,
+            proto_dot_channel__pb2.GetChannelsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -208,8 +208,8 @@ class channelService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/channel.channelService/getChannelSubsHistory',
-            channel_pb2.ChannelSubsHistoryRequest.SerializeToString,
-            channel_pb2.ChannelSubsHistoryResponse.FromString,
+            proto_dot_channel__pb2.ChannelSubsHistoryRequest.SerializeToString,
+            proto_dot_channel__pb2.ChannelSubsHistoryResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -225,8 +225,8 @@ class channelService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/channel.channelService/getPostStatHistory',
-            channel_pb2.PostStatHistoryRequest.SerializeToString,
-            channel_pb2.PostStatHistoryResponse.FromString,
+            proto_dot_channel__pb2.PostStatHistoryRequest.SerializeToString,
+            proto_dot_channel__pb2.PostStatHistoryResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -242,8 +242,8 @@ class channelService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/channel.channelService/getPosts',
-            channel_pb2.GetPostsRequest.SerializeToString,
-            channel_pb2.GetPostsResponse.FromString,
+            proto_dot_channel__pb2.GetPostsRequest.SerializeToString,
+            proto_dot_channel__pb2.GetPostsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -259,7 +259,7 @@ class channelService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/channel.channelService/getPostInfo',
-            channel_pb2.GetPostsInfoRequest.SerializeToString,
-            channel_pb2.GetPostInfoResponse.FromString,
+            proto_dot_channel__pb2.GetPostsInfoRequest.SerializeToString,
+            proto_dot_channel__pb2.GetPostInfoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

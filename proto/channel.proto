@@ -47,7 +47,7 @@ message ChannelInfo {
 }
 
 message GetChannelsResponse {
-  repeated int64 channel_ids = 1;
+  int64 channel_id = 1;
 }
 
 message ChannelSubsHistoryRequest {
@@ -60,8 +60,7 @@ message ChannelSubsHistoryResponse {
 
 message ChannelSubsHistory {
   int64 channel_id = 1;
-  google.protobuf.Timestamp moment = 2;
-  int64 subs = 3;
+  repeated HistoryValues history_values = 2;
 }
 
 message PostStatHistoryRequest {
@@ -81,13 +80,12 @@ message PostStatHistoryResponse {
 
 message PostStatHistory {
   int64 channel_id = 1;
-  repeated PostHistoryType post_history = 2;
+  repeated PostHistory post_history = 2;
 }
 
-message PostHistoryType {
+message PostHistory{
   HistoryType history_type = 1;
-  google.protobuf.Timestamp moment = 2;
-  int64 count = 3;
+  repeated HistoryValues history_values = 2;
 }
 
 message GetPostsRequest {
@@ -120,4 +118,9 @@ message PostInfo{
   google.protobuf.StringValue content = 2;
   int64 views = 3;
   int64 shares = 4;
+}
+
+message HistoryValues{
+  google.protobuf.Timestamp moment = 1;
+  int64 value = 2;
 }
