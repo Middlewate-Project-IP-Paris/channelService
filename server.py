@@ -1,7 +1,9 @@
 import ast
 import binascii
+import datetime
 from json import loads
 import logging
+import random
 import grpc
 import threading
 from concurrent import futures
@@ -22,6 +24,7 @@ bootstrap_servers = [f'''{vars.KAFKA_BROKER_URL}:{vars.KAFKA_BROKER_PORT}''']
 class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     def getPostStat(self, request, context):
         print("getPostStat")
+        # Works
         # Implement your getPostStat logic here
         response = channel_pb2.PostStatResponse()
         response.channel_id = request.channel_id
@@ -31,6 +34,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getChannelInfo(self, request, context):
+        # Works
         print("getChannelInfo")
         # Implement your getChannelInfo logic here
         response = channel_pb2.ChannelInfoResponse()
@@ -44,51 +48,84 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getChannels(self, request, context):
+        # Works
         # Implement your getChannels logic here
+        # Done
         for channel_id in range(1, 6):
             res = channel_pb2.GetChannelsResponse(channel_id=channel_id)
             yield res
 
     def getChannelSubsHistory(self, request, context):
         print("getChannelSubsHistory")
+        response = channel_pb2.ChannelSubsHistoryResponse()
         for channel_id in request.channel_id:
-            response = channel_pb2.ChannelSubsHistoryResponse()
-            channel_subs_history = response.channel_subs_history.add()
+            channel_subs_history = channel_pb2.ChannelSubsHistory()
             channel_subs_history.channel_id = channel_id
-            history_values = channel_subs_history.history_values.add()
-            history_values.moment.CopyFrom(Timestamp(seconds=1609459200))  # Replace with actual data
-            history_values.value = 1000  # Replace with actual data
-            yield response
+            for _ in range(10):  # You can adjust the number of random data points
+                history_values = channel_pb2.HistoryValues()
+                current_time = datetime.datetime.utcnow()
+                timestamp = Timestamp()
+                timestamp.FromDatetime(current_time)
+                history_values.moment.CopyFrom(timestamp)
+                history_values.value = random.randint(0, 1000)  # Generate a random value
+                channel_subs_history.history_values.append(history_values)
+            response.channel_subs_history.append(channel_subs_history)
+
+        return response
+        # return response
 
     def getPostStatHistory(self, request, context):
         print("getPostStatHistory")
-        # Implement your getPostStatHistory logic here
+        response = channel_pb2.PostStatHistoryResponse()
+            
         for channel_id in request.channel_id:
+            post_stat_history = channel_pb2.PostStatHistory()
+            post_stat_history.channel_id = channel_id
             for history_type in request.history_type:
-                response = channel_pb2.PostStatHistoryResponse()
-                response.post_stat_history.extend([
-                    channel_pb2.PostStatHistory(
-                        channel_id=channel_id,
-                        post_history=[
-                            channel_pb2.PostHistoryType(
-                                history_type=history_type,
-                                moment=Timestamp(seconds=1609459200),  # Replace with actual data
-                                count=100,  # Replace with actual data
-                            ),
-                        ],
-                    ),
-                ])
-                yield response
+                post_history = channel_pb2.PostHistory()
+                post_history.history_type = history_type
+                for _ in range(10):  # You can adjust the number of random data points
+                    history_values = channel_pb2.HistoryValues()
+                    current_time = datetime.datetime.utcnow()
+                    timestamp = Timestamp()
+                    timestamp.FromDatetime(current_time)
+                    history_values.moment.CopyFrom(timestamp)
+                    history_values.value = random.randint(0, 1000)  # Generate a random value
+                    post_history.history_values.append(history_values)
+                post_stat_history.post_history.append(post_history)
+            response.post_stat_history.append(post_stat_history)
+
+        return response
 
     def getPosts(self, request, context):
-            print("getPosts")
-            for channel_id in request.channel_ids:
-                response = channel_pb2.GetPostsResponse()
-                channel_posts = response.channels_posts.add()
-                channel_posts.channel_id = channel_id
-                # Add post_id values as a list
-                channel_posts.post_id.extend([1, 2, 3])  # Replace with actual data
-                yield response
+        print("getPosts")
+        response = channel_pb2.GetPostsResponse()
+        for channel_id in request.channel_ids:
+            channel_posts = channel_pb2.ChannelPosts()
+            channel_posts.channel_id = channel_id
+            for _ in range(10):  # You can adjust the number of random post IDs
+                channel_posts.post_id.append(random.randint(1, 100))  # Generate a random post ID
+            response.channels_posts.append(channel_posts)
+        return response
+    
+    def getPostInfo(self, request, context):
+        response = channel_pb2.GetPostInfoResponse()
+    
+        for _ in request.post_ids:
+            post_info = channel_pb2.PostInfo()
+            post_info.post_id = random.randint(1, 1000)  # Generate a random post ID
+
+            # Generate random content (assuming a string field)
+            post_info.content.value = "Random content: " + str(random.randint(1, 1000))
+
+            # Generate random views and shares (assuming int64 fields)
+            post_info.views = random.randint(0, 1000)
+            post_info.shares = random.randint(0, 1000)
+
+            response.post_info.append(post_info)
+
+        return response
+        
 
 
 def create_consumer(topic):
