@@ -69,16 +69,18 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     def getChannelSubsHistory(self, request, context):
         print("getChannelSubsHistory")
         response = channel_pb2.ChannelSubsHistoryResponse()
+        db_instance = Aggregator()
+        
         for channel_id in request.channel_id:
             channel_subs_history = channel_pb2.ChannelSubsHistory()
             channel_subs_history.channel_id = channel_id
-            for _ in range(10):  # You can adjust the number of random data points
+            subs = db_instance.channelSubsHistory(channel_id)
+            for measurement in subs:  # You can adjust the number of random data points
                 history_values = channel_pb2.HistoryValues()
-                current_time = datetime.datetime.utcnow()
                 timestamp = Timestamp()
-                timestamp.FromDatetime(current_time)
+                timestamp.FromDatetime(datetime.datetime.fromtimestamp(measurement["moment"]))
                 history_values.moment.CopyFrom(timestamp)
-                history_values.value = random.randint(0, 1000)  # Generate a random value
+                history_values.value = measurement["subs_count"]  # Generate a random value
                 channel_subs_history.history_values.append(history_values)
             response.channel_subs_history.append(channel_subs_history)
 
