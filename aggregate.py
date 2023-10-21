@@ -33,8 +33,12 @@ class Aggregator:
         return list(channels)
 
 
-    def postsStats(self,channel_id, post_id) -> dict:
-        pass
+    def postStats(self,channel_id, post_id) -> dict:
+        db_instance = Database()
+        messages_raw = db_instance.getMessages('postStat')
+        filtered_data = [item for item in messages_raw if item["channel_id"] == channel_id and item["post_id"] == post_id]
+        latest_info = max(filtered_data, key=lambda x: x["moment"])
+        return latest_info
 
     def channelSubsHistory(self,channel_id) -> dict:
         pass

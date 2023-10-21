@@ -30,17 +30,19 @@ bootstrap_servers = [f'''{vars.KAFKA_BROKER_URL}:{vars.KAFKA_BROKER_PORT}''']
 class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     def getPostStat(self, request, context):
         print("getPostStat")
-        # Works
+        # Done
         # Implement your getPostStat logic here
+        db_instance = Aggregator()
+        post_stats = db_instance.postStats(request.channel_id, request.post_id)
         response = channel_pb2.PostStatResponse()
         response.channel_id = request.channel_id
         response.post_id = request.post_id
-        response.views = 100  # Replace with actual data
-        response.shares = 50  # Replace with actual data
+        response.views = post_stats["views"]
+        response.shares = post_stats["shares"]
         return response
 
     def getChannelInfo(self, request, context):
-        # Works
+        # Done
         print("getChannelInfo")
         # Implement your getChannelInfo logic here
         db_instance = Aggregator()
@@ -56,7 +58,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getChannels(self, request, context):
-        # Works
+        # Done
         db_instance = Aggregator()
         channels = db_instance.channels()
         
