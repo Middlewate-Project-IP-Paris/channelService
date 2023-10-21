@@ -19,6 +19,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.empty_pb2 import Empty  # Import the Empty message
 import vars
 from database.database import Database
+import aggregate as Aggregator
 
 
 
