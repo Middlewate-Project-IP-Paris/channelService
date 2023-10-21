@@ -19,7 +19,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.empty_pb2 import Empty  # Import the Empty message
 import vars
 from database.database import Database
-import aggregate as Aggregator
+from aggregate import Aggregator
 
 
 
@@ -43,21 +43,24 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         # Works
         print("getChannelInfo")
         # Implement your getChannelInfo logic here
+        db_instance = Aggregator()
+        channels_info = db_instance.channelInfo(request.channel_id)
         response = channel_pb2.ChannelInfoResponse()
-        for channel_id in request.channel_id:
+        for channel in channels_info:
             channel_info = response.channel_info.add()
-            channel_info.channel_id = channel_id
-            channel_info.name = "Channel Name"  # Replace with actual data
-            channel_info.link = "https://example.com/channel"  # Replace with actual data
-            channel_info.description = "Channel Description"  # Replace with actual data
-            channel_info.subscribers = 10000  # Replace with actual data
+            channel_info.channel_id = channel["channel_id"]
+            channel_info.name = channel["channel_name"]  # Replace with actual data
+            channel_info.link = channel["channel_title"]  # Replace with actual data
+            channel_info.description = channel["channel_description"]  # Replace with actual data
+            channel_info.subscribers = channel["subs"]  # Replace with actual data
         return response
 
     def getChannels(self, request, context):
         # Works
-        # Implement your getChannels logic here
-        # Done
-        for channel_id in range(1, 6):
+        db_instance = Aggregator()
+        channels = db_instance.channels()
+        
+        for channel_id in channels:
             res = channel_pb2.GetChannelsResponse(channel_id=channel_id)
             yield res
 
@@ -157,7 +160,7 @@ def consume_data(topic):
         # message = consumer.poll(timeout=5)
         for message in consumer:
             message_value = message.value.decode()
-            # print(message.value.decode())
+            print(message.value.decode())
             try:
                 message_data = json.loads(message_value)
                 db_instance = Database()

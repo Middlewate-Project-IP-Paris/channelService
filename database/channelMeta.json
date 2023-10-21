@@ -1,12 +1,10 @@
 {"messages" : [
 {
-    "channel_id":1
-},
-{
-    "channel_id":2
-},
-{
-    "channel_id":1
+"channel_id":1,  
+"moment": 13123.323, 	
+"channel_name" : "Name",	
+"channel_title":	"title", 	
+"channel_description" :	"link"
 }
 ]
 }

@@ -4,8 +4,24 @@ class Aggregator:
     def __init__(self):
         pass
 
-    def channelInfo(self,channel_id) -> dict:
-        pass
+    def getSubs(self, channel_id) -> int:
+        db_instance = Database()
+        messages_raw = db_instance.getMessages('subscount')
+        filtered_data = [item for item in messages_raw if item["channel_id"] == channel_id]
+        subs = max(filtered_data, key=lambda x: x["moment"])["subs_count"]
+        return subs
+    
+    def channelInfo(self,channel_ids) -> list:
+        db_instance = Database()
+        messages_raw = db_instance.getMessages('channelMeta')
+        channels_info = []
+        for message in messages_raw:
+            if message["channel_id"] in channel_ids:
+                message["subs"] = self.getSubs(message["channel_id"])
+                channels_info.append(message)
+
+
+        return channels_info
 
 
     def channels(self) -> list:

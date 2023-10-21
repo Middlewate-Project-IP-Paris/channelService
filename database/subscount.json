@@ -1,4 +1,19 @@
 {
     "messages": [
+        {
+            "channel_id": 1,
+            "subs_count": 1000,
+            "moment": 1697897371.384872
+        },
+        {
+            "channel_id": 1,
+            "subs_count": 10010,
+            "moment": 1697897395.384872
+        },
+        {
+            "channel_id": 2,
+            "subs_count": 5000,
+            "moment": 1697897400.384872
+        }
     ]
 }
