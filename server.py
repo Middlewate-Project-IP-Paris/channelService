@@ -1,7 +1,8 @@
 import ast
 import binascii
 import datetime
-from json import loads
+from json import JSONDecodeError, loads
+import json
 import logging
 import random
 import grpc
@@ -17,6 +18,10 @@ from confluent_kafka import Consumer
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.empty_pb2 import Empty  # Import the Empty message
 import vars
+from database.database import Database
+
+
+
 
 kafka_topics = ['subsCount']
 bootstrap_servers = [f'''{vars.KAFKA_BROKER_URL}:{vars.KAFKA_BROKER_PORT}''']
@@ -145,12 +150,20 @@ def create_consumer(topic):
     return consumer
 
 
-def consume_data():
-    consumer = KafkaConsumer("subsCount", bootstrap_servers='localhost:29092', auto_offset_reset='earliest', enable_auto_commit=False)
+def consume_data(topic):
+    consumer = KafkaConsumer(topic, bootstrap_servers='localhost:29092', auto_offset_reset='latest', enable_auto_commit=False)
     while True:
         # message = consumer.poll(timeout=5)
         for message in consumer:
-            print(message.value.decode())
+            message_value = message.value.decode()
+            # print(message.value.decode())
+            try:
+                message_data = json.loads(message_value)
+                db_instance = Database()
+                db_instance.addMessage(topic, message_data)
+            except JSONDecodeError as json_error:
+                print(f"Error decoding JSON: {json_error}")
+            
         
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -159,8 +172,9 @@ def serve():
     server.start()
     print("Server started on port 50051")
     
-    # t1 = Process(target=consume_data)
-    # t1.start()
+    for topic in ["subsCount", "channelMeta", "postContent", "postStat"]:
+        t1 = Process(target=consume_data, args=(topic,))
+        t1.start()
     server.wait_for_termination()
 
 if __name__ == '__main__':
