@@ -117,13 +117,17 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getPosts(self, request, context):
+        db_instance = Aggregator()
         print("getPosts")
+        moment = request.moment
+        moment = datetime.datetime.fromtimestamp(request.moment.seconds + request.moment.nanos / 1e9)
         response = channel_pb2.GetPostsResponse()
         for channel_id in request.channel_ids:
             channel_posts = channel_pb2.ChannelPosts()
             channel_posts.channel_id = channel_id
-            for _ in range(10):  # You can adjust the number of random post IDs
-                channel_posts.post_id.append(random.randint(1, 100))  # Generate a random post ID
+            posts = db_instance.posts(channel_id, int(moment.timestamp()))
+            for id in posts:  # You can adjust the number of random post IDs
+                channel_posts.post_id.append(id)  # Generate a random post ID
             response.channels_posts.append(channel_posts)
         return response
     

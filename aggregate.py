@@ -63,12 +63,13 @@ class Aggregator:
         return posts_stats_history
 
     def posts(self,channel_id, moment) -> dict:
-        pass
+        db_instance = Database()
+        messages_raw = db_instance.getMessages("postStat")
+        filtered_data = [item["post_id"] for item in messages_raw if item["channel_id"] == channel_id and item["publicated_at"] >= moment]
+        return filtered_data
+        # pass
 
     def postInfo(self,channel_id, post_id) -> dict:
         pass
 
 
-
-# db_instance = Aggregator()
-# print(db_instance.postStatHistory(123, 456, ["views", "shares"]))
