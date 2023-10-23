@@ -46,11 +46,29 @@ class Aggregator:
         filtered_data = [item for item in messages_raw if item["channel_id"] == channel_id]
         return filtered_data
 
-    def postStatHistory(self,channel_id, post_id) -> dict:
-        pass
+    def postStatHistory(self,channel_id, post_id, history_type) -> dict:
+        posts_stats_history = []
+        db_instance = Database()
+        messages_raw = db_instance.getMessages('postStat')
+        filtered_data = [item for item in messages_raw if item["channel_id"] == channel_id and item["post_id"] == post_id]
+        for post in filtered_data:
+            cur_post = {
+                "moment" : post["moment"]
+            }
+            if history_type == 2:
+                cur_post["value"] = post["shares"]
+            if history_type == 1:
+                cur_post["value"] = post["views"]
+            posts_stats_history.append(cur_post)
+        return posts_stats_history
 
     def posts(self,channel_id, moment) -> dict:
         pass
 
     def postInfo(self,channel_id, post_id) -> dict:
         pass
+
+
+
+# db_instance = Aggregator()
+# print(db_instance.postStatHistory(123, 456, ["views", "shares"]))

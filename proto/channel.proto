@@ -64,8 +64,9 @@ message ChannelSubsHistory {
 }
 
 message PostStatHistoryRequest {
-  repeated int64 channel_id = 1;
-  repeated HistoryType history_type = 2;
+  int64 channel_id = 1;
+  int64 post_id = 2;
+  repeated HistoryType history_type = 3;
 }
 
 enum HistoryType {
@@ -80,7 +81,8 @@ message PostStatHistoryResponse {
 
 message PostStatHistory {
   int64 channel_id = 1;
-  repeated PostHistory post_history = 2;
+  int64 post_id = 2;
+  repeated PostHistory post_history = 3;
 }
 
 message PostHistory{

@@ -8,6 +8,16 @@
         "publicated_at": 1697897696, 
         "edited_at": 1697903100,  
         "deleted_at": 1697906600  
+    },
+    {
+        "channel_id": 123,
+        "moment": 1697897697,  
+        "post_id": 456,
+        "views": 789,
+        "shares": 10,
+        "publicated_at": 1697897696, 
+        "edited_at": 1697903100,  
+        "deleted_at": 1697906600  
     }
     
 ]

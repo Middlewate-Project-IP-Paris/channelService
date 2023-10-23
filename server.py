@@ -89,25 +89,31 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
 
     def getPostStatHistory(self, request, context):
         print("getPostStatHistory")
-        response = channel_pb2.PostStatHistoryResponse()
-            
-        for channel_id in request.channel_id:
-            post_stat_history = channel_pb2.PostStatHistory()
-            post_stat_history.channel_id = channel_id
-            for history_type in request.history_type:
-                post_history = channel_pb2.PostHistory()
-                post_history.history_type = history_type
-                for _ in range(10):  # You can adjust the number of random data points
-                    history_values = channel_pb2.HistoryValues()
-                    current_time = datetime.datetime.utcnow()
-                    timestamp = Timestamp()
-                    timestamp.FromDatetime(current_time)
-                    history_values.moment.CopyFrom(timestamp)
-                    history_values.value = random.randint(0, 1000)  # Generate a random value
-                    post_history.history_values.append(history_values)
-                post_stat_history.post_history.append(post_history)
-            response.post_stat_history.append(post_stat_history)
 
+        db_instance = Aggregator()
+        # post_stats = db_instance.postStats(request.channel_id, request.post_id, request.history_type)
+        response = channel_pb2.PostStatHistoryResponse()
+
+        
+        post_stat_history =channel_pb2.PostStatHistory()
+
+        # Generate random channel ID and post ID
+        post_stat_history.channel_id = request.channel_id
+        post_stat_history.post_id = request.post_id
+
+        for history_type in request.history_type:
+            post_history = channel_pb2.PostHistory()
+            post_history.history_type = history_type
+            values = db_instance.postStatHistory(request.channel_id, request.post_id, history_type)
+            for value in values:  # You can adjust the number of random data points
+                history_values = channel_pb2.HistoryValues()
+                timestamp = Timestamp()
+                timestamp.FromDatetime(datetime.datetime.fromtimestamp(value["moment"]))
+                history_values.moment.CopyFrom(timestamp)
+                history_values.value = value["value"]  # Generate a random value
+                post_history.history_values.append(history_values)
+            post_stat_history.post_history.append(post_history)
+        response.post_stat_history.append(post_stat_history)
         return response
 
     def getPosts(self, request, context):
