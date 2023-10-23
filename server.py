@@ -30,7 +30,7 @@ bootstrap_servers = [f'''{vars.KAFKA_BROKER_URL}:{vars.KAFKA_BROKER_PORT}''']
 class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     def getPostStat(self, request, context):
         print("getPostStat")
-        # Done
+        # Works
         # Implement your getPostStat logic here
         db_instance = Aggregator()
         post_stats = db_instance.postStats(request.channel_id, request.post_id)
@@ -42,7 +42,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getChannelInfo(self, request, context):
-        # Done
+        # Works
         print("getChannelInfo")
         # Implement your getChannelInfo logic here
         db_instance = Aggregator()
@@ -58,7 +58,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getChannels(self, request, context):
-        # Done
+        # Works
         db_instance = Aggregator()
         channels = db_instance.channels()
         
@@ -67,6 +67,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
             yield res
 
     def getChannelSubsHistory(self, request, context):
+        # Works
         print("getChannelSubsHistory")
         response = channel_pb2.ChannelSubsHistoryResponse()
         db_instance = Aggregator()
@@ -88,6 +89,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         # return response
 
     def getPostStatHistory(self, request, context):
+        # Works
         print("getPostStatHistory")
 
         db_instance = Aggregator()
@@ -117,6 +119,7 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         return response
 
     def getPosts(self, request, context):
+        # Works
         db_instance = Aggregator()
         print("getPosts")
         moment = request.moment
