@@ -136,17 +136,17 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
     
     def getPostInfo(self, request, context):
         response = channel_pb2.GetPostInfoResponse()
-    
-        for _ in request.post_ids:
+        db_instance = Aggregator()
+        for post_id in request.post_ids:
             post_info = channel_pb2.PostInfo()
-            post_info.post_id = random.randint(1, 1000)  # Generate a random post ID
-
+            post_info.post_id = post_id  # Generate a random post ID
+            post_info_dict = db_instance.postInfo(request.channel_id, post_id)
             # Generate random content (assuming a string field)
-            post_info.content.value = "Random content: " + str(random.randint(1, 1000))
+            post_info.content.value = post_info_dict.get("content", "NO CONTENT AVAILABLE")
 
             # Generate random views and shares (assuming int64 fields)
-            post_info.views = random.randint(0, 1000)
-            post_info.shares = random.randint(0, 1000)
+            post_info.views = post_info_dict.get("views", 0)
+            post_info.shares = post_info_dict.get("shares", 0)
 
             response.post_info.append(post_info)
 

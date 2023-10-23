@@ -70,6 +70,26 @@ class Aggregator:
         # pass
 
     def postInfo(self,channel_id, post_id) -> dict:
-        pass
+        post_info = {}
+        db_instance = Database()
+        content = db_instance.getMessages('postContent')
+        post_content = [item for item in content if item["channel_id"] == channel_id and item["post_id"] == post_id]
+        if post_content != []:
+            post_info["post_id"] = post_id
+            post_info["content"] = post_content[0]["content"]
+            
+        
+        messages_raw = db_instance.getMessages('postStat')
+        filtered_data = [item for item in messages_raw if item["channel_id"] == channel_id and item["post_id"] == post_id]
+        
+        if filtered_data != []:
+            latest_info = max(filtered_data, key=lambda x: x["moment"])
+            post_info["views"] = latest_info["views"]
+            post_info["shares"] = latest_info["shares"]
+
+        return post_info
+        # pass
 
 
+# db_instance = Aggregator()
+# print(db_instance.postInfo(20, 20))
