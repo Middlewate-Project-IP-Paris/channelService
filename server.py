@@ -154,21 +154,21 @@ class ChannelServiceServicer(channel_pb2_grpc.channelServiceServicer):
         
 
 
-def create_consumer(topic):
-    try:
-        consumer = Consumer({"bootstrap.servers": 'localhost:29092',
-                             "group.id": vars.KAFKA_CONSUMER_GROUP,
-                            #  "client.id": socket.gethostname(),
-                            #  "isolation.level": "read_committed",
-                            #  "default.topic.config": {"auto.offset.reset": "latest", # Only consume new messages
-                            #                           "enable.auto.commit": False}
-                             })
-        consumer.subscribe([topic])
-    except Exception as e:
-        logging.exception("Couldn't create the consumer")
-        consumer = None
+# def create_consumer(topic):
+#     try:
+#         consumer = Consumer({"bootstrap.servers": 'localhost:29092',
+#                              "group.id": vars.KAFKA_CONSUMER_GROUP,
+#                             #  "client.id": socket.gethostname(),
+#                             #  "isolation.level": "read_committed",
+#                             #  "default.topic.config": {"auto.offset.reset": "latest", # Only consume new messages
+#                             #                           "enable.auto.commit": False}
+#                              })
+#         consumer.subscribe([topic])
+#     except Exception as e:
+#         logging.exception("Couldn't create the consumer")
+#         consumer = None
 
-    return consumer
+#     return consumer
 
 
 def consume_data(topic):
